@@ -30,6 +30,10 @@ public final class ServiceBehindUnstableNetwork implements NetworkComponent {
          * The probability should be in [0, 1[!
          */
         this.failProbability = failProbability;
+        if(this.failProbability < 0 || this.failProbability >= 1){
+            final String msg = "Probability should be in range [0, 1[";
+            throw new java.lang.IllegalArgumentException(msg);
+        }
         randomGenerator = new Random(randomSeed);
     }
 
