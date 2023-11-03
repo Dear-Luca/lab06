@@ -4,6 +4,7 @@ import it.unibo.exceptions.fakenetwork.api.NetworkComponent;
 import it.unibo.exceptions.fakenetwork.impl.ServiceBehindUnstableNetwork;
 
 import java.io.PrintStream;
+import java.io.IOException;
 
 import static it.unibo.exceptions.arithmetic.ArithmeticService.DIVIDED;
 import static it.unibo.exceptions.arithmetic.ArithmeticService.MINUS;
@@ -17,7 +18,8 @@ public final class UseArithmeticService {
 
     private static final PrintStream LOG = System.out;
 
-    private UseArithmeticService() { }
+    private UseArithmeticService() {
+    }
 
     /**
      *
@@ -43,17 +45,39 @@ public final class UseArithmeticService {
 
     private static void retrySendOnNetworkError(final NetworkComponent server, final String message) {
         /*
-         * This method should re-try to send message to the provided server, catching all IOExceptions,
+         * This method should re-try to send message to the provided server, catching
+         * all IOExceptions,
          * until it succeeds.
          */
+        boolean noSucced = true;
+        while (noSucced) {
+            try {
+                server.sendData(message);
+                noSucced = false;
+            } catch (final IOException e) {
+                System.out.println("IO exception" + e.toString());
+            }
+        }
+
     }
 
     private static String retryReceiveOnNetworkError(final NetworkComponent server) {
         /*
-         * This method should re-try to retrieve information from the provided server, catching all IOExceptions,
+         * This method should re-try to retrieve information from the provided server,
+         * catching all IOExceptions,
          * until it succeeds.
          */
-        return null;
+
+        while (true) {
+            try {
+                String message = server.receiveResponse();
+                return message;
+
+            } catch (final IOException e) {
+                System.out.println("IO exception" + e.toString());
+            }
+        }
+
     }
 
     private static void assertEqualsAsDouble(final String expected, final String actual) {
@@ -66,21 +90,19 @@ public final class UseArithmeticService {
     }
 
     private static void assertComputeResult(
-        final NetworkComponent server,
-        final String expected,
-        final String... operation
-    ) {
-        for (final var command: operation) {
+            final NetworkComponent server,
+            final String expected,
+            final String... operation) {
+        for (final var command : operation) {
             retrySendOnNetworkError(server, command);
         }
         assertEqualsAsDouble(expected, retryReceiveOnNetworkError(server));
     }
 
     private static void assertThrowsException(
-        final NetworkComponent server,
-        final Class<? extends Throwable> expected,
-        final String... operation
-    ) {
+            final NetworkComponent server,
+            final Class<? extends Throwable> expected,
+            final String... operation) {
         try {
             assertComputeResult(server, null, operation);
             throw new AssertionError(expected.getSimpleName() + " expected, but no exception was thrown");
@@ -90,24 +112,21 @@ public final class UseArithmeticService {
     }
 
     private static void assertExceptionIs(
-        final Class<? extends Throwable> expectedException,
-        final Throwable actualException
-    ) {
+            final Class<? extends Throwable> expectedException,
+            final Throwable actualException) {
         if (!expectedException.isAssignableFrom(actualException.getClass())) {
             throw new AssertionError(
-                "Expected exception "
-                    + expectedException.getSimpleName()
-                    + ", but got "
-                    + actualException.getClass().getSimpleName()
-            );
+                    "Expected exception "
+                            + expectedException.getSimpleName()
+                            + ", but got "
+                            + actualException.getClass().getSimpleName());
         }
         LOG.println(
-            "Exception successfully collected: "
-                + actualException.getClass().getSimpleName()
-                + "["
-                + actualException.getMessage()
-                + "]"
-        );
+                "Exception successfully collected: "
+                        + actualException.getClass().getSimpleName()
+                        + "["
+                        + actualException.getMessage()
+                        + "]");
     }
 
 }
