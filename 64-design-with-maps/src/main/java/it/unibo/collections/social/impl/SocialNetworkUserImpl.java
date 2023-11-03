@@ -36,6 +36,8 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      * In order to save the people followed by a user organized in groups, adopt
      * a generic-type Map:  think of what type of keys and values would best suit the requirements
      */
+    private Map<String, Set<U>> followedUsers = new HashMap<>();
+    
 
     /*
      * [CONSTRUCTORS]
@@ -62,13 +64,15 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      *            application
      */
     public SocialNetworkUserImpl(final String name, final String surname, final String user, final int userAge) {
-        super(null, null, null, 0);
+        super(name, surname, user, userAge);
     }
 
     /*
      * 2) Define a further constructor where the age defaults to -1
      */
-
+    public SocialNetworkUserImpl(final String name, final String surname, final String user) {
+        this(name, surname, user, -1);
+    }
     /*
      * [METHODS]
      *
@@ -76,7 +80,16 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public boolean addFollowedUser(final String circle, final U user) {
-        return false;
+        Set<U> circleFriends;
+        if(this.followedUsers.get(circle) == null){
+            circleFriends = new HashSet<>();
+            circleFriends.add(user);
+            this.followedUsers.put(circle, circleFriends);
+            return true;
+        }else{
+            circleFriends = this.followedUsers.get(circle);
+            return circleFriends.add(user);   
+        }
     }
 
     /**
@@ -86,11 +99,18 @@ public final class SocialNetworkUserImpl<U extends User> extends UserImpl implem
      */
     @Override
     public Collection<U> getFollowedUsersInGroup(final String groupName) {
-        return null;
+        if(this.followedUsers.get(groupName) == null){
+            return new HashSet<U>();
+        }
+        return new HashSet<>(this.followedUsers.get(groupName));
     }
 
     @Override
     public List<U> getFollowedUsers() {
-        return null;
+        Set<U> setAllFriends = new HashSet<>();
+        for(Set<U> set : followedUsers.values()){
+            setAllFriends.addAll(set);
+        }
+        return new ArrayList<>(setAllFriends);
     }
 }
