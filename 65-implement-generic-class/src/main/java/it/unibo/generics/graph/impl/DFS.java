@@ -2,7 +2,6 @@ package it.unibo.generics.graph.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.Map;
@@ -28,9 +27,7 @@ public class DFS<N> {
             visited.put(node, false);
             parent.put(node, null);
         }
-
         dfs(source);
-
     }
 
     private void dfs(N node) {
@@ -54,5 +51,4 @@ public class DFS<N> {
         Collections.reverse(path);
         return path;
     }
-
 }
