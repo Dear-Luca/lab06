@@ -87,7 +87,6 @@ origin  git@github.com:APICe-at-DISI/OOP-git-merge-conflict-test.git (push)
 
 
 8. Si faccia push del branch `master` sul proprio repository
-9. Si setti il branch remoto `master` del nuovo repository come *upstream* per il proprio branch `master` locale
 
 ```
 git push -u myrepo master
@@ -102,3 +101,7 @@ To github.com:Dear-Luca/lab06-es61-merge-conflict.git
  * [new branch]      master -> master
 branch 'master' set up to track 'myrepo/master'.
 ```
+
+9. Si setti il branch remoto `master` del nuovo repository come *upstream* per il proprio branch `master` locale
+git branch --set-upstream-to=myrepo/master 
+branch 'master' set up to track 'myrepo/master'.
