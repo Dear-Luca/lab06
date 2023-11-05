@@ -24,9 +24,9 @@ public class BFS<N> {
 
     public List<N> search() {
         // initializing the nodes
-        for (var u : graph.keySet()) {
-            visited.put(u, false);
-            parent.put(u, null);
+        for (var node : graph.keySet()) {
+            visited.put(node, false);
+            parent.put(node, null);
         }
         // creating queue for BFS
         Queue<N> queue = new LinkedList<>();
@@ -35,12 +35,12 @@ public class BFS<N> {
         visited.put(source, true);
 
         while (!queue.isEmpty()) {
-            var u = queue.remove();
-            for (var v : graph.get(u)) {
+            var node = queue.remove();
+            for (var v : graph.get(node)) {
                 if (visited.get(v) == false) {
                     queue.add(v);
                     visited.put(v, true);
-                    parent.put(v, u);
+                    parent.put(v, node);
                 }
             }
         }
@@ -51,7 +51,6 @@ public class BFS<N> {
             tmp = parent.get(tmp);
         }
         path.add(source);
-        System.out.println(path.toString());
         Collections.reverse(path);
         return path;
     }
